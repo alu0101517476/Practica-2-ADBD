@@ -24,8 +24,23 @@
 ---
 
 
-## 📑 Índice.
+## 📑 Índice
 
+1. [Introducción](#1-introducción)  
+2. [Entidades y atributos](#2-entidades-y-atributos)  
+   2.1 [💊 Medicamento](#21-medicamento)  
+   2.2 [🏭 Laboratorio](#22-laboratorio)  
+   2.3 [🗂️ Familia](#23-familia)  
+   2.4 [👤 Cliente](#24-cliente)  
+   2.5 [🩺 Enfermedad](#25-enfermedad)  
+3. [Relaciones](#3-relaciones)  
+   3.1 [Relación Medicamento - Laboratorio](#31-relación-medicamento---laboratorio)  
+   3.2 [Relación Medicamento - Familia](#32-relación-medicamento---familia)  
+   3.3 [Relación Medicamento - Cliente](#33-relación-medicamento---cliente)  
+   3.4 [Relación Familia - Enfermedad](#34-relación-familia---enfermedad)  
+   3.5 [Relación Medicamento - Tipo de medicamento](#35-relación-medicamento---tipo-de-medicamento)  
+   3.6 [Relación Cliente - Tipo de cliente](#36-relación-cliente---tipo-de-cliente)  
+4. [Restricciones semánticas](#4-restricciones-semánticas)  
 
 
 
@@ -103,21 +118,138 @@ El objetivo del modelo es organizar de forma eficiente los datos de clientes, me
 |--------------|-----------------|-------------|
 | **Nombre enfermedad (PK)** | Identificador único de la enfermedad. | `Migraña` |
 
+
+
 ---
 
 ## 3. Relaciones.
+En este apartado se describen de forma detallada las **relaciones** entre las entidades presentes en el diagrama.  
+Cada relación se explica indicando su **participación**, **cardinalidad**, **interpretación** e **importancia en el modelo**.
+
 
 ### 3.1. Relación Medicamento - Laboratorio.
+- **Participación:**  
+  - Un **medicamento** puede estar relacionado con **uno o varios laboratorios**.  
+  - Un **laboratorio** puede producir o distribuir **uno o varios medicamentos**.  
+
+- **Cardinalidad:** `(N, M)`  
+
+- **Interpretación:**  
+  Esta relación refleja el vínculo de producción o distribución. Un medicamento concreto (ejemplo: Paracetamol 500mg) puede provenir de distintos laboratorios, lo que permite tener opciones en caso de falta de suministro de uno de ellos. A su vez, un laboratorio no se limita a un solo producto, sino que fabrica o distribuye distintos medicamentos que luego llegan a la farmacia. 
+
+- **Importancia en el modelo:**  
+  Garantiza que se pueda identificar de qué laboratorio proviene cada medicamento, dato clave para la trazabilidad y para la gestión de proveedores.  
+
+---
 
 ### 3.2. Relación Medicamento - Familia.
 
+- **Participación:**  
+  - Cada **medicamento** pertenece a **una única familia**.  
+  - Una **familia** puede agrupar **muchos medicamentos**.  
+
+- **Cardinalidad:** `(1, N)`  
+
+- **Interpretación:**  
+  Esta relación permite clasificar los medicamentos en categorías terapéuticas. Por ejemplo, la familia Analgésicos puede contener medicamentos como Ibuprofeno 600mg, Paracetamol 500mg y Metamizol. Esa clasificación facilita ofrecer al cliente alternativas de la misma familia si un medicamento específico no está disponible en stock. 
+
+- **Importancia en el modelo:**  
+  Es fundamental para organizar el catálogo de la farmacia y mantener coherencia en la clasificación de productos.
+---
+
 ### 3.3. Relación Medicamento - Cliente.
+- **Participación:**  
+  - Un **cliente** puede comprar **uno o varios medicamentos**.  
+  - Un **medicamento** puede ser comprado por **muchos clientes**.  
+
+- **Cardinalidad:** `(1, N)`  
+
+- **Atributos de la relación:**  
+  - **Fecha de compra**:  indica el día en que se realizó la compra.
+  - **Número de medicamentos comprados**  : cantidad de unidades de ese medicamento adquiridas en la compra.
+
+- **Interpretación:**  
+  Esta relación modela la transacción de venta entre la farmacia y sus clientes. Permite registrar de manera detallada qué medicamentos compró un cliente, cuántos y en qué fecha. Por ejemplo, el cliente María López (DNI: 12345678A) puede comprar 2 cajas de Ibuprofeno 600mg el 15/05/2023.
+
+- **Importancia en el modelo:**  
+  Vincula la gestión de inventario con la de clientes, permitiendo controlar ventas y stock.  
+
+---
 
 ### 3.4. Relación Familia - Enfermedad.
+- **Participación:**  
+  - Una **familia** puede tratar **varias enfermedades**.  
+  - Una **enfermedad** puede ser tratada por **diferentes familias**.  
 
-### 3.5. Relación Medicamento - Tipo de medicamento
+- **Cardinalidad:** `(N, M)`  
+
+- **Interpretación:**  
+  Esta relación vincula los medicamentos con su finalidad terapéutica. Por ejemplo, la familia Antibióticos puede tratar tanto infecciones urinarias como bronquitis. A su vez, la enfermedad Migraña puede ser tratada con medicamentos de la familia Analgésicos y también con los de la familia Antimigrañosos.
+
+- **Importancia en el modelo:**  
+  Proporciona la lógica médica del sistema: relaciona la clasificación de medicamentos con las enfermedades que pueden tratarse, lo cual ayuda tanto a nivel de consulta como de gestión de inventario.
+
+---
+
+### 3.5. Relación Medicamento - Tipo de medicamento.
+- **Participación:**  
+  - Todo **medicamento** debe clasificarse en **un único tipo**.  
+  - Tipos: *Venta libre* o *Con receta*.  
+  
+- **Interpretación:**  
+  Esta relación permite diferenciar los medicamentos que requieren receta médica de los que se pueden vender libremente. Por ejemplo, Paracetamol 500mg puede ser “Venta libre”, mientras que Amoxicilina 875mg sería “Con receta”.
+
+- **Importancia en el modelo:**  
+  Asegura el cumplimiento legal en la dispensación de medicamentos.  
+
+---
 
 ### 3.6. Relación Cliente - Tipo de cliente
+- **Participación:**  
+  - Todo **cliente** pertenece a **un único tipo**.  
+  - Tipos: *Con crédito* o *Sin crédito*.  
+
+- **Interpretación:**  
+  Diferencia la forma de pago de los clientes.  
+  - *Sin crédito*: pago al contado.  
+  - *Con crédito*: pago a fin de mes, con datos bancarios y fecha de alta.  
+
+- **Importancia en el modelo:**  
+  Permite gestionar tanto ventas al contado como ventas a crédito, controlando la facturación y cobros pendientes.  
 
 --- 
+
+---
+
+## 4. Restricciones semánticas  
+
+Además de las entidades y relaciones definidas, el modelo incorpora una serie de restricciones que garantizan la coherencia de los datos y reflejan las reglas de negocio de la farmacia:
+
+1. **Especialización de Cliente**  
+   - Todo cliente debe pertenecer **únicamente a uno de los dos tipos**: *Con crédito* o *Sin crédito*.  
+   - Si un cliente es *Con crédito*, debe registrar obligatoriamente los **datos bancarios** y la **fecha de alta del crédito**.  
+
+2. **Especialización de Medicamento**  
+   - Todo medicamento debe clasificarse **exclusivamente** como *Con receta* o *Venta libre*.  
+   - No se admite la existencia de medicamentos fuera de estas dos categorías.  
+
+3. **Relación Medicamento – Familia**  
+   - Cada medicamento debe estar asociado a **exactamente una familia**.  
+   - Una familia puede agrupar múltiples medicamentos, pero un medicamento no puede pertenecer a más de una familia.  
+
+4. **Relación Cliente – Medicamento (Compra)**  
+   - Toda compra debe registrar al menos **una unidad** de medicamento.  
+   - La **fecha de compra** debe ser válida y no puede ser posterior a la fecha actual.  
+
+5. **Restricciones sobre atributos numéricos**  
+   - El número de **unidades en stock** y las **unidades vendidas** debe ser un valor **entero no negativo**.  
+   - El **precio** de cada medicamento debe ser **mayor que cero**.  
+
+6. **Relación Familia – Enfermedad**  
+   - Una enfermedad debe estar asociada al menos a una familia de medicamentos que pueda tratarla.  
+   - Una misma enfermedad puede estar vinculada a varias familias.  
+
+---
+
+
 
